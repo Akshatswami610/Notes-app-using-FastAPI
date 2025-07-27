@@ -45,8 +45,7 @@ FastAPI/
 │
 ├── templates/ # Frontend HTML templates
 │ ├── index.html
-│ ├── edit_note.html
-│ └── file.html
+│ └── edit_note.html
 │
 ├── index.py # Main FastAPI app
 ├── requirements.txt # Dependencies
