@@ -2,6 +2,7 @@
 
 FastNotes is a simple yet powerful **Notes management web application** built with **FastAPI** and **MongoDB**.  
 It allows you to **create, edit, and delete notes** with a clean and modern web interface.
+
 <img width="1896" height="864" alt="image" src="https://github.com/user-attachments/assets/d0b6cea6-bd3e-4ea6-863d-b39eddc72783" />
 
 ---
