@@ -29,29 +29,29 @@ It allows you to **create, edit, and delete notes** with a clean and modern web 
 
 ## 📂 Project Structure
 <pre>
-FastAPI/
-├── config/
-│ └── db.py # MongoDB connection config
+📁FastAPI/
+├── 📁config/
+│ └── 📄db.py # MongoDB connection config
 │
-├── models/
-│ └── note.py # Pydantic data model
+├── 📁models/
+│ └── 📄note.py # Pydantic data model
 │
-├── routes/
-│ └── note.py # CRUD routes for notes
+├── 📁routes/
+│ └── 📄note.py # CRUD routes for notes
 │
-├── schemas/
-│ └── note.py # MongoDB to dict serialization
+├── 📁schemas/
+│ └── 📄note.py # MongoDB to dict serialization
 │
-├── static/ # Static assets (CSS/JS/images)
+├── 📁static/ # Static assets (CSS/JS/images)
 │
-├── templates/ # Frontend HTML templates
-│ ├── index.html
-│ └── edit_note.html
+├── 📁templates/ # Frontend HTML templates
+│ ├──📄 index.html
+│ └── 📄edit_note.html
 │
-├── index.py # Main FastAPI app
-├── requirements.txt # Dependencies
-├── .env # Environment variables (Mongo URI, etc.)
-└── README.md
+├── 📄index.py # Main FastAPI app
+├── 📄requirements.txt # Dependencies
+├── 📄.env # Environment variables (Mongo URI, etc.)
+└── 📄README.md
 </pre>
 ---
 
