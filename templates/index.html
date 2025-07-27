@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .form-check-label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .notes-header h2 {
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .notes-count {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .note-item {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease;
+        }
+
+        .note-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .note-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .note-info {
+            flex: 1;
+        }
+
+        .note-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .note-desc {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .note-meta {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .meta-item strong {
+            color: #666;
+        }
+
+        .important-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .empty-state p {
+            opacity: 0.7;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .note-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .note-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Add your note</h1>
+        </div>
+
+        <!-- Add Note Form -->
+        <div class="card">
+            <form action="/" method="post">
+                <div class="form-group">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="desc" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="desc" name="desc" required>
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="important" name="important">
+                    <label class="form-check-label" for="important">Important</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <!-- Notes List -->
+        <div class="container">
+            <div class="notes-header">
+                <h2>All Notes</h2>
+                <span class="notes-count">
+                    {% if newDocs %}
+                        {{ newDocs|length }} {{ 'note' if newDocs|length == 1 else 'notes' }}
+                    {% else %}
+                        0 notes
+                    {% endif %}
+                </span>
+            </div>
+
+            <div id="notes-container">
+                {% if newDocs %}
+                    {% for item in newDocs %}
+                        <div class="note-item" id="note-{{ item._id }}">
+                            <div class="note-content">
+                                <div class="note-info">
+                                    <div class="note-title">
+                                        {{ item.title }}
+                                        {% if item.important %}
+                                            <span class="important-badge">Important</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="note-desc">{{ item.desc }}</div>
+                                    <div class="note-meta">
+                                        {% if item.created_at %}
+                                            <span class="meta-item">📅 <strong>Created:</strong> {{ item.created_at }}</span>
+                                        {% endif %}
+                                        {% if item.updated_at and item.updated_at != item.created_at %}
+                                            <span class="meta-item">✏️ <strong>Updated:</strong> {{ item.updated_at }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="note-actions">
+                                    <a href="/edit/{{ item._id }}" class="btn btn-warning">Edit</a>
+                                    <button class="btn btn-danger" onclick="deleteNote('{{ item._id }}')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p class="text-muted">No notes yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format and display timestamps on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            formatTimestamps();
+        });
+
+        function formatTimestamps() {
+            // Format any existing timestamps to be more readable
+            const metaItems = document.querySelectorAll('.meta-item');
+            metaItems.forEach(item => {
+                const text = item.textContent;
+                // Look for date patterns and enhance them
+                const dateRegex = /(\d{4}-\d{2}-\d{2})/;
+
+                if (dateRegex.test(text)) {
+                    const dateMatch = text.match(/(\d{4}-\d{2}-\d{2})/);
+                    if (dateMatch) {
+                        try {
+                            const date = new Date(dateMatch[0]);
+                            const formattedDate = date.toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            });
+                            item.innerHTML = item.innerHTML.replace(dateMatch[0], formattedDate);
+                        } catch (e) {
+                            // If date parsing fails, keep original format
+                        }
+                    }
+                }
+            });
+        }
+
+        async function deleteNote(noteId) {
+            if (confirm("Are you sure you want to delete this note?")) {
+                try {
+                    const response = await fetch(`/delete/${noteId}`, {
+                        method: "POST"
+                    });
+
+                    if (response.ok) {
+                        // Remove the note element from the page with animation
+                        const noteElement = document.getElementById(`note-${noteId}`);
+                        if (noteElement) {
+                            noteElement.style.opacity = '0';
+                            noteElement.style.transform = 'translateX(-100px)';
+                            setTimeout(() => {
+                                noteElement.remove();
+                                updateNotesCount();
+                                checkIfEmpty();
+                            }, 300);
+                        }
+                        showToast('Note deleted successfully!');
+                    } else {
+                        showToast('Failed to delete note', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting note:', error);
+                    showToast('Failed to delete note', 'error');
+                }
+            }
+        }
+
+        function updateNotesCount() {
+            const remainingNotes = document.querySelectorAll('.note-item').length;
+            const countElement = document.querySelector('.notes-count');
+            if (countElement) {
+                countElement.textContent = `${remainingNotes} ${remainingNotes === 1 ? 'note' : 'notes'}`;
+            }
+        }
+
+        function checkIfEmpty() {
+            const notesContainer = document.getElementById('notes-container');
+            const remainingNotes = document.querySelectorAll('.note-item').length;
+
+            if (remainingNotes === 0) {
+                notesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p class="text-muted">No notes yet.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

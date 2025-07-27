@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Note</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .note-meta {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .note-meta p {
+            margin: 0;
+            color: #555;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .note-meta p + p {
+            margin-top: 8px;
+        }
+
+        .note-meta strong {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .form-check:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .form-check-label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #218838, #1ea085);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333, #a71e2a);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .form-card {
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            ← Back to Notes
+        </a>
+
+        <div class="header">
+            <h1>✏️ Edit Note</h1>
+        </div>
+
+        <div class="card form-card">
+            {% if note.created_at %}
+                <div class="note-meta">
+                    <p>📅 <strong>Created:</strong> {{ note.created_at }}</p>
+                    {% if note.updated_at and note.updated_at != note.created_at %}
+                        <p>✏️ <strong>Last Updated:</strong> {{ note.updated_at }}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <form id="edit-form" action="/edit/{{ note._id }}" method="post">
+                <div class="form-group">
+                    <label for="title" class="form-label">Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        value="{{ note.title }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="desc" class="form-label">Description</label>
+                    <textarea
+                        class="form-control"
+                        id="desc"
+                        name="desc"
+                        rows="3"
+                        required
+                    >{{ note.desc }}</textarea>
+                </div>
+
+                <div class="form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="important"
+                        name="important"
+                        {% if note.important %}checked{% endif %}
+                    >
+                    <label class="form-check-label" for="important">
+                        ⭐ Mark as Important
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success" id="update-btn">
+                        💾 Update Note
+                    </button>
+                    <button type="button" class="btn btn-danger" id="delete-btn" onclick="deleteNote('{{ note._id }}')">
+                        🗑️ Delete Note
+                    </button>
+                    <a href="/" class="btn btn-secondary">
+                        ❌ Cancel
+                    </a>
+                </div>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Updating note...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format and display timestamps if available
+        window.addEventListener('DOMContentLoaded', function() {
+            // Format any existing timestamps to be more readable
+            const metaPs = document.querySelectorAll('.note-meta p');
+            metaPs.forEach(p => {
+                const text = p.textContent;
+                // Look for date patterns and enhance them
+                const dateRegex = /(\d{4}-\d{2}-\d{2})/;
+                const timeRegex = /(\d{2}:\d{2}:\d{2})/;
+
+                if (dateRegex.test(text) || timeRegex.test(text)) {
+                    // Try to parse and format the date if it's in a standard format
+                    const dateMatch = text.match(/(\d{4}-\d{2}-\d{2})/);
+                    const timeMatch = text.match(/(\d{2}:\d{2})/);
+
+                    if (dateMatch) {
+                        try {
+                            const date = new Date(dateMatch[0]);
+                            const formattedDate = date.toLocaleDateString('en-US', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            p.innerHTML = p.innerHTML.replace(dateMatch[0], formattedDate);
+                        } catch (e) {
+                            // If date parsing fails, keep original format
+                        }
+                    }
+                }
+            });
+        });
+
+        // Delete note function
+        async function deleteNote(noteId) {
+            if (confirm("⚠️ Are you sure you want to delete this note? This action cannot be undone.")) {
+                try {
+                    // Show loading state for delete button
+                    const deleteBtn = document.getElementById('delete-btn');
+                    const originalText = deleteBtn.innerHTML;
+                    deleteBtn.innerHTML = '⏳ Deleting...';
+                    deleteBtn.disabled = true;
+
+                    const response = await fetch(`/delete/${noteId}`, {
+                        method: "POST"
+                    });
+
+                    if (response.ok) {
+                        showToast('Note deleted successfully!');
+                        // Redirect to main page after a short delay
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1500);
+                    } else {
+                        showToast('Failed to delete note', 'error');
+                        deleteBtn.innerHTML = originalText;
+                        deleteBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error deleting note:', error);
+                    showToast('Failed to delete note', 'error');
+                    const deleteBtn = document.getElementById('delete-btn');
+                    deleteBtn.innerHTML = '🗑️ Delete Note';
+                    deleteBtn.disabled = false;
+                }
+            }
+        }
+
+        // Enhanced form submission with loading states and better UX
+        document.getElementById('edit-form').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const desc = document.getElementById('desc').value.trim();
+
+            if (!title || !desc) {
+                e.preventDefault();
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Show loading state
+            showLoading(true);
+
+            // Let the form submit naturally to the server
+            // The loading will be hidden when the page redirects
+        });
+
+        // Form validation and enhancement
+        document.getElementById('title').addEventListener('input', function() {
+            validateField(this);
+        });
+
+        document.getElementById('desc').addEventListener('input', function() {
+            validateField(this);
+        });
+
+        function validateField(field) {
+            if (field.value.trim() === '') {
+                field.style.borderColor = '#dc3545';
+                field.style.boxShadow = '0 0 0 4px rgba(220, 53, 69, 0.1)';
+            } else {
+                field.style.borderColor = '#28a745';
+                field.style.boxShadow = '0 0 0 4px rgba(40, 167, 69, 0.1)';
+            }
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            const form = document.getElementById('edit-form');
+            const updateBtn = document.getElementById('update-btn');
+
+            if (show) {
+                loading.style.display = 'block';
+                form.style.opacity = '0.5';
+                form.style.pointerEvents = 'none';
+                updateBtn.innerHTML = '⏳ Updating...';
+            } else {
+                loading.style.display = 'none';
+                form.style.opacity = '1';
+                form.style.pointerEvents = 'auto';
+                updateBtn.innerHTML = '💾 Update Note';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span>${type === 'success' ? '✅' : '❌'}</span>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Auto-resize textarea
+        const textarea = document.getElementById('desc');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.max(120, this.scrollHeight) + 'px';
+        });
+
+        // Initial textarea resize
+        textarea.style.height = Math.max(120, textarea.scrollHeight) + 'px';
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                document.getElementById('edit-form').dispatchEvent(new Event('submit'));
+            }
+
+            // Escape to cancel
+            if (e.key === 'Escape') {
+                if (confirm('Are you sure you want to cancel editing? Any changes will be lost.')) {
+                    window.location.href = '/';
+                }
+            }
+        });
+
+        // Show success message if redirected from update
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('updated') === 'true') {
+            showToast('Note updated successfully!');
+        }
+    </script>
+</body>
+</html>
