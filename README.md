@@ -83,6 +83,8 @@ The app will run on: http://127.0.0.1:8000/
 
 ## 🌍 Live Demo- https://notes-app-dpz8.onrender.com/
 
+---
+
 ## 📝 License
 This project is licensed under the MIT License.
 Feel free to use and modify it.
